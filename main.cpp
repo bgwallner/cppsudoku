@@ -21,5 +21,7 @@ int main()
     std::vector<std::vector<int>> v = puzzle.GetPuzzle();
     puzzle.PrintPuzzleToConsole(v);
     std::cout << std::endl;
+    puzzle.PrintPuzzleToConsole();
+    std::cout << std::endl;
 }
 
