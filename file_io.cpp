@@ -1,7 +1,7 @@
 #include "file_io.h"
 #include <iostream>
-#include <string>       // std::string
-#include <fstream>      // std::ifstream
+#include <string>
+#include <fstream>
 #include <stdexcept>
 
 namespace file_io {
@@ -42,6 +42,8 @@ int FileIO::ReadPuzzleFromFile(std::string file_name)
 
 FileIO::FileIO()
 {
+    // Resize into 9x9 matrix
+    puzzle.resize(kDim, std::vector<int>(kDim));
 }
 
 FileIO::FileIO(std::string file_name)
@@ -56,9 +58,8 @@ FileIO::FileIO(std::string file_name)
     }
 }
 
-FileIO::~FileIO() {
-	// Resize into 9x9 matrix
-	puzzle.resize(kDim, std::vector<int>(kDim));
+FileIO::~FileIO() 
+{
 
 }
 
@@ -69,6 +70,7 @@ std::vector<std::vector<int>> FileIO::GetPuzzle(void)
 
 int FileIO::PrintPuzzleToConsole(const std::vector<std::vector<int>>& puzzle)
 {
+    // TODO: Check puzzle dimensions
     std::cout << "                  SODUKU PUZZLE\n";
     std::cout << "\n";
     std::cout <<"  --------------------------------------------\n";

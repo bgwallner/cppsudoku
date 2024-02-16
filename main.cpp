@@ -18,10 +18,20 @@ int main()
 
     // Create a puzzle from input
     file_io::FileIO puzzle{ file_name };
+
+    // Get current stored puzzle in class
     std::vector<std::vector<int>> v = puzzle.GetPuzzle();
+
+    // Print the fetched puzzle
     puzzle.PrintPuzzleToConsole(v);
     std::cout << std::endl;
+
+    // Print current puzzle stored in class
     puzzle.PrintPuzzleToConsole();
     std::cout << std::endl;
+
+    // Invoke default constructor (no file read)
+    file_io::FileIO puzzle2;
+    puzzle2.PrintPuzzleToConsole();
 }
 
