@@ -8,11 +8,15 @@ namespace file_io {
 
 class FileIO {
 
+	// Puzzle declaration
 	std::vector<std::vector<int>> puzzle;
 
 	// Class private method invoked from overloaded constructor
 	// which reads data into private member puzzle
 	int ReadPuzzleFromFile(std::string file_name);
+
+	// Validate that puzzle is 9x9
+	int ValidatePuzzle(const std::vector<std::vector<int>>& puzzle);
 public:
 
 	// Default constructor
