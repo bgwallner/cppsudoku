@@ -20,6 +20,11 @@ int FileIO::ReadPuzzleFromFile(std::string file_name)
 
     // Accepted input is numbers {1,9} and '.'
     std::fstream infile(file_name);
+    if (infile.fail())
+    {
+        return kNotOK;
+    }
+
     while ((infile >> a) && (kMaxElems > elem_counter))
     {
         value = a - '0';
@@ -54,7 +59,8 @@ FileIO::FileIO(std::string file_name)
 	// Read the puzzle from file_name
     if (ReadPuzzleFromFile(file_name) != kOK)
     {
-        throw std::invalid_argument("Invalid file syntax.");
+        throw std::invalid_argument("Invalid file syntax or non-existing file.");
+        std::cout << "\n";
     }
 }
 

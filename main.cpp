@@ -17,21 +17,30 @@ int main()
     std::cout<<std::endl;
 
     // Create a puzzle from input
-    file_io::FileIO puzzle{ file_name };
+    try {
+        file_io::FileIO puzzle{ file_name };
 
-    // Get current stored puzzle in class
-    std::vector<std::vector<int>> v = puzzle.GetPuzzle();
+        // Get current stored puzzle in class
+        std::vector<std::vector<int>> v = puzzle.GetPuzzle();
 
-    // Print the fetched puzzle
-    puzzle.PrintPuzzleToConsole(v);
-    std::cout << std::endl;
+        // Print the fetched puzzle
+        puzzle.PrintPuzzleToConsole(v);
+        std::cout << std::endl;
 
-    // Print current puzzle stored in class
-    puzzle.PrintPuzzleToConsole();
-    std::cout << std::endl;
+        // Print current puzzle stored in class
+        puzzle.PrintPuzzleToConsole();
+        std::cout << std::endl;
+    }
+    catch (const std::invalid_argument& e)
+    {
+        std::cout << e.what();
+        return 0;
+    }
 
     // Invoke default constructor (no file read)
     file_io::FileIO puzzle2;
     puzzle2.PrintPuzzleToConsole();
+    
+    return 0;
 }
 
