@@ -16,7 +16,7 @@ class FileIO {
 	int ReadPuzzleFromFile(std::string file_name);
 
 	// Validate that puzzle is 9x9
-	int ValidatePuzzle(const std::vector<std::vector<int>>& puzzle);
+	int ValidatePuzzleDim(const std::vector<std::vector<int>>& puzzle);
 public:
 
 	// Default constructor

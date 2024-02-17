@@ -7,7 +7,7 @@
 namespace file_io {
 
 constexpr int kDim{ 9u };
-int constexpr kMaxElems{ 81u };
+constexpr int kMaxElems{ 81u };
 constexpr int kMaxVal{ 9u };
 constexpr int kOK{ 0 };
 constexpr int kNotOK{ -1 };
@@ -68,11 +68,11 @@ std::vector<std::vector<int>> FileIO::GetPuzzle(void)
 	return puzzle;
 }
 
-int FileIO::ValidatePuzzle(const std::vector<std::vector<int>>& puzzle)
+int FileIO::ValidatePuzzleDim(const std::vector<std::vector<int>>& puzzle)
 {
     if (kDim == puzzle.size())
     {
-        for (int i = 0; i < kDim; i++)
+        for (int i{ 0 }; i < kDim; i++)
         {
             if (kDim != puzzle[i].size())
             {
@@ -89,7 +89,7 @@ int FileIO::ValidatePuzzle(const std::vector<std::vector<int>>& puzzle)
 int FileIO::PrintPuzzleToConsole(const std::vector<std::vector<int>>& puzzle)
 {
     // Check puzzle dimensions for provided puzzle
-    if (kOK != FileIO::ValidatePuzzle(puzzle))
+    if (kOK != FileIO::ValidatePuzzleDim(puzzle))
     {
         return kNotOK;
     }
@@ -97,9 +97,9 @@ int FileIO::PrintPuzzleToConsole(const std::vector<std::vector<int>>& puzzle)
     std::cout << "                  SODUKU PUZZLE\n";
     std::cout << "\n";
     std::cout <<"  --------------------------------------------\n";
-    for (int row = 0; row < kDim; row++)
+    for (int row{ 0 }; row < kDim; row++)
     {
-        for (int col = 0; col < kDim; col++)
+        for (int col{ 0 }; col < kDim; col++)
         {
             if ((kDim - 1) == col)
             {
@@ -113,7 +113,7 @@ int FileIO::PrintPuzzleToConsole(const std::vector<std::vector<int>>& puzzle)
         std::cout << "\n";
         std::cout << "  --------------------------------------------\n";
     }
-	return kOK;
+    return kOK;
 }
 
 int FileIO::PrintPuzzleToConsole(void)
@@ -121,9 +121,9 @@ int FileIO::PrintPuzzleToConsole(void)
     std::cout << "                  SODUKU PUZZLE\n";
     std::cout << "\n";
     std::cout << "  --------------------------------------------\n";
-    for (int row = 0; row < kDim; row++)
+    for (int row{ 0 }; row < kDim; row++)
     {
-        for (int col = 0; col < kDim; col++)
+        for (int col{ 0 }; col < kDim; col++)
         {
             if ((kDim - 1) == col)
             {
