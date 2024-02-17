@@ -1,19 +1,29 @@
 #include "puzzle_solver.h"
 
-puzzle_solver::PuzzleSolver::PuzzleSolver()
+namespace puzzle_solver
 {
-}
-
-puzzle_solver::PuzzleSolver::~PuzzleSolver()
-{
-}
-
-int puzzle_solver::PuzzleSolver::ForwardSolver(std::vector<std::vector<int>>& puzzle)
+int PuzzleSolver::GetFirstFreeElement(const std::vector<std::vector<int>>& puzzle,
+	int& row, int& col)
 {
 	return 0;
 }
 
-int puzzle_solver::PuzzleSolver::BackwardSolver(std::vector<std::vector<int>>& puzzle)
+PuzzleSolver::PuzzleSolver()
+{
+}
+
+PuzzleSolver::~PuzzleSolver()
+{
+}
+
+int PuzzleSolver::ForwardSolver(std::vector<std::vector<int>>& puzzle)
 {
 	return 0;
 }
+
+int PuzzleSolver::BackwardSolver(std::vector<std::vector<int>>& puzzle)
+{
+	return 0;
+}
+
+} // namespace puzzle_solver

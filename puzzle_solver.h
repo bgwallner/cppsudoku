@@ -6,6 +6,11 @@
 namespace puzzle_solver {
 
 class PuzzleSolver {
+
+// Get the first available element (value=0)
+int GetFirstFreeElement(const std::vector<std::vector<int>>& puzzle,
+	int& row, int& col);
+
 public:
 	PuzzleSolver();
 	~PuzzleSolver();
