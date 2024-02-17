@@ -35,13 +35,16 @@
     <ClInclude Include="file_io.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="puzzle_checker.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="puzzle_solver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="puzzle_creator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="puzzle_checker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

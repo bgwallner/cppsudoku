@@ -1,14 +1,9 @@
 #include "puzzle_checker.h"
 
+#include "constants.h"
+
 namespace puzzle_checker
 {
-
-constexpr int kDim{ 9u };
-constexpr int kMaxElems{ 81u };
-constexpr int kMaxVal{ 9u };
-constexpr int kOK{ 0 };
-constexpr int kNotOK{ -1 };
-
 PuzzleChecker::PuzzleChecker::PuzzleChecker() {}
 
 PuzzleChecker::PuzzleChecker::~PuzzleChecker() {}

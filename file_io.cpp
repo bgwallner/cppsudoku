@@ -1,16 +1,13 @@
 #include "file_io.h"
+
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <stdexcept>
 
-namespace file_io {
+#include "constants.h"
 
-constexpr int kDim{ 9u };
-constexpr int kMaxElems{ 81u };
-constexpr int kMaxVal{ 9u };
-constexpr int kOK{ 0 };
-constexpr int kNotOK{ -1 };
+namespace file_io {
 	
 int FileIO::ReadPuzzleFromFile(std::string file_name)
 {

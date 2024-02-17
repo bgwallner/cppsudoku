@@ -1,14 +1,9 @@
 #include "puzzle_solver.h"
 
+#include "constants.h"
+
 namespace puzzle_solver
 {
-
-constexpr int kDim{ 9u };
-constexpr int kMaxElems{ 81u };
-constexpr int kMaxVal{ 9u };
-constexpr int kOK{ 0 };
-constexpr int kNotOK{ -1 };
-
 int PuzzleSolver::GetFirstFreeElement(const std::vector<std::vector<int>>& puzzle,
 	int& row, int& col)
 {
