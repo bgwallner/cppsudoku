@@ -43,7 +43,7 @@ int PuzzleChecker::IsInColValid(int value, const std::vector<std::vector<int>>& 
     for (int i{ 0 }; i < kDim; i++)
     {
         // Row is running index
-        if (i != col)
+        if (i != row)
         {
             if (value == puzzle[i][col])
             {
