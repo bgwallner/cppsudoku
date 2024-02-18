@@ -19,7 +19,7 @@ class FileIO {
 	int ValidatePuzzleDim(const std::vector<std::vector<int>>& puzzle);
 public:
 
-	// Default constructor
+	// Default constructor (if method access only is needed)
 	FileIO();
 
 	// Constructor reading from file_name and fills class

@@ -7,6 +7,8 @@ namespace puzzle_solver {
 
 class PuzzleSolver {
 
+long recursion_counter{ 0 };
+
 // Get the first available element (value=0)
 int GetFirstFreeElement(const std::vector<std::vector<int>>& puzzle,
 	int& row, int& col);
@@ -20,6 +22,9 @@ public:
 
 	// Solve puzzle using DFS by evaluating values 9->1
 	int BackwardSolver(std::vector<std::vector<int>>& puzzle);
+
+	// Get number of recursions needed for solver
+	long GetNumberOfRecursions(void) { return recursion_counter; }
 
 };
 

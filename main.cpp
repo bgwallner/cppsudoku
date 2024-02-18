@@ -23,13 +23,46 @@ int main()
         // Get current stored puzzle in class
         std::vector<std::vector<int>> v = puzzle.GetPuzzle();
 
+        // Make a copy of the puzzle
+        std::vector<std::vector<int>> u = v;
+
         // Print the fetched puzzle
         puzzle.PrintPuzzleToConsole(v);
-        std::cout << std::endl;
+        std::cout << '\n';
 
-        // Print current puzzle stored in class
-        puzzle.PrintPuzzleToConsole();
-        std::cout << std::endl;
+        // Solve the puzzle forward solver
+        puzzle_solver::PuzzleSolver sudoku_fwd;
+        sudoku_fwd.ForwardSolver(v);
+        
+        // Print the solved puzzle
+        std::cout << "*** Solving puzzle with forward solver ***" << '\n';
+        std::cout << '\n';
+        puzzle.PrintPuzzleToConsole(v);
+        std::cout << '\n';
+        std::cout << "Number of recursions needed : " << sudoku_fwd.GetNumberOfRecursions() << '\n';
+        std::cout << '\n';
+
+        // Solve the puzzle backward solver
+        puzzle_solver::PuzzleSolver sudoku_bw;
+        sudoku_bw.BackwardSolver(u);
+
+        // Print the solved puzzle
+        std::cout << "*** Solving puzzle with backward solver ***" << '\n';
+        std::cout << '\n';
+        puzzle.PrintPuzzleToConsole(u);
+        std::cout << '\n';
+        std::cout << "Number of recursions needed : " << sudoku_bw.GetNumberOfRecursions() << '\n';
+        std::cout << '\n';
+
+        // Check if solutions are the same (=unique)
+        if (v == u)
+        {
+            std::cout << "RESULT: Puzzle is unique";
+        }
+        else
+        {
+            std::cout << "RESULT: Puzzle is NOT unique.";
+        }
     }
     catch (const std::invalid_argument& e)
     {
@@ -37,10 +70,6 @@ int main()
         return 0;
     }
 
-    // Invoke default constructor (no file read)
-    file_io::FileIO puzzle2;
-    puzzle2.PrintPuzzleToConsole();
-    
     return 0;
 }
 
