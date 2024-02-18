@@ -56,7 +56,7 @@ FileIO::FileIO(std::string file_name)
 	// Read the puzzle from file_name
     if (ReadPuzzleFromFile(file_name) != kOK)
     {
-        throw std::invalid_argument("Invalid file syntax or non-existing file.");
+        throw std::invalid_argument("ERROR: Invalid file syntax or non-existing file.");
         std::cout << "\n";
     }
 }

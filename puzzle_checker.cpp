@@ -65,8 +65,8 @@ int PuzzleChecker:: IsInGroupValid(const int value, const std::vector<std::vecto
         return kNotOK;
     }
 
-    /* Find row and col start, e.g. group2 starts at col=3 and ends col=5 */
-    /* and 3 mod 3 = 0, 4 mod 3 = 1, 5 mod 3 = 2. Use this to find start. */
+    // Find row and col start, e.g. group2 starts at col=3 and ends col=5
+    // and 3 mod 3 = 0, 4 mod 3 = 1, 5 mod 3 = 2. Use this to find start.
     row_start = row - row % 3;
     col_start = col - col % 3;
 

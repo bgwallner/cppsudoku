@@ -67,9 +67,36 @@ int main()
     catch (const std::invalid_argument& e)
     {
         std::cout << e.what();
-        return 0;
+        std::cout << '\n';
     }
 
+    std::cout << '\n';
+    std::cout << " *** Creation of puzzle ***" << '\n';
+    std::cout << '\n';
+
+    int NoOfClues{ 0 };
+    std::cout << "Enter number of clues in range 20->35: ";
+    std::cin >> NoOfClues;
+    std::cout << std::endl;
+    try
+    {
+        // Create a puzzle and its solution
+        puzzle_creator::PuzzleCreator creator(NoOfClues);
+
+        // Get the result
+        std::vector<std::vector<int>> sudoku = creator.GetSudokuPuzzle();
+        std::vector<std::vector<int>> solution = creator.GetPuzzleSolution();
+
+        file_io::FileIO printer; // No file input
+        printer.PrintPuzzleToConsole(sudoku);
+        std::cout << '\n';
+        printer.PrintPuzzleToConsole(solution);
+        std::cout << '\n';
+    }
+    catch (const std::invalid_argument& e)
+    {
+        std::cout << e.what();
+    }
     return 0;
 }
 
