@@ -25,13 +25,9 @@ int PuzzleSolver::GetFirstFreeElement(const std::vector<std::vector<int>>& puzzl
     return kNotOK;
 }
 
-PuzzleSolver::PuzzleSolver()
-{
-}
+PuzzleSolver::PuzzleSolver() {};
 
-PuzzleSolver::~PuzzleSolver()
-{
-}
+PuzzleSolver::~PuzzleSolver() {};
 
 int PuzzleSolver::ForwardSolver(std::vector<std::vector<int>>& puzzle)
 {
@@ -42,7 +38,7 @@ int PuzzleSolver::ForwardSolver(std::vector<std::vector<int>>& puzzle)
     recursion_counter++;
  
     // Find first element with value 0
-    if (kOK == GetFirstFreeElement(puzzle, row, col)) // <--- here iteration in uiRow,uiCol takes place
+    if (kOK == GetFirstFreeElement(puzzle, row, col)) // <--- here iteration in row,col takes place
     {
         // Test all values from 1..kMaxVal
         for (int value{ 1 }; value <= kMaxVal; value++)
@@ -65,7 +61,6 @@ int PuzzleSolver::ForwardSolver(std::vector<std::vector<int>>& puzzle)
                 }
             }
         }
-
         // Puzzle could not be solved for any value= 1..9, need to backtrack.
         puzzle[row][col] = 0;
         return kNotOK;
@@ -88,7 +83,7 @@ int PuzzleSolver::BackwardSolver(std::vector<std::vector<int>>& puzzle)
     recursion_counter++;
 
     // Find first element with value 0
-    if (kOK == GetFirstFreeElement(puzzle, row, col)) // <--- here iteration in uiRow,uiCol takes place
+    if (kOK == GetFirstFreeElement(puzzle, row, col)) // <--- here iteration in row,col takes place
     {
         // Test all values from kMaxVal->1
         for (int value{ kMaxVal }; value >= 1; value--)
@@ -111,7 +106,6 @@ int PuzzleSolver::BackwardSolver(std::vector<std::vector<int>>& puzzle)
                 }
             }
         }
-
         // Puzzle could not be solved for any value= 1..9, need to backtrack.
         puzzle[row][col] = 0;
         return kNotOK;

@@ -58,10 +58,12 @@ int main()
         if (v == u)
         {
             std::cout << "RESULT: Puzzle is unique";
+            std::cout << '\n';
         }
         else
         {
             std::cout << "RESULT: Puzzle is NOT unique.";
+            std::cout << '\n';
         }
     }
     catch (const std::invalid_argument& e)

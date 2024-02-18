@@ -12,8 +12,21 @@ class PuzzleCreator {
 	// Solution will contain the solved sudoku
 	std::vector<std::vector<int>> solution;
 
+	// Solution when solving with backward solver
+	std::vector<std::vector<int>> solution_bw;
+
+	// Number of clues provided in constructor
+	int NbrOfClues{ 0 };
+
 	// Runs the creation of the sodoku
 	int RunPuzzleCreator(void);
+
+	//Create a random sudoku-candidate
+	int CreateRandomCandidate(void);
+
+	// Set private members to 0
+	int ClearPrivateData(void);
+
 public:
 	PuzzleCreator() = delete;
 	PuzzleCreator(const int NoOfClues);
