@@ -14,12 +14,16 @@ public:
 	~PuzzleChecker();
 
 	// Check if a value is valid in the current row in puzzle
-	int IsInRowValid(int value, const std::vector<std::vector<int>>& puzzle, int row, int col);
+	int IsInRowValid(const int value, const std::vector<std::vector<int>>& puzzle,
+		const int row, const int col);
 
 	// Check if a value is valid in the current col in puzzle
-	int IsInColValid(int value, const std::vector<std::vector<int>>& puzzle, int row, int col);
+	int IsInColValid(const int value, const std::vector<std::vector<int>>& puzzle,
+		const int row, const int col);
 
-	int IsInGroupValid(int value, const std::vector<std::vector<int>>& puzzle, int row, int col);
+	// Check that value is valid within 3x3 group
+	int IsInGroupValid(const int value, const std::vector<std::vector<int>>& puzzle,
+		const int row, const int col);
 
 };
 

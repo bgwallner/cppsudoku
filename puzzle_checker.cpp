@@ -8,8 +8,8 @@ PuzzleChecker::PuzzleChecker::PuzzleChecker() {}
 
 PuzzleChecker::PuzzleChecker::~PuzzleChecker() {}
 
-int PuzzleChecker:: IsInRowValid(int value, const std::vector<std::vector<int>>& puzzle,
-    int row, int col)
+int PuzzleChecker:: IsInRowValid(const int value, const std::vector<std::vector<int>>& puzzle,
+    const int row, const int col)
 {
     // Boundary check
     if ((row >= kDim) || (col >= kDim))
@@ -31,8 +31,8 @@ int PuzzleChecker:: IsInRowValid(int value, const std::vector<std::vector<int>>&
     return kOK;
 }
 
-int PuzzleChecker::IsInColValid(int value, const std::vector<std::vector<int>>& puzzle,
-    int row, int col)
+int PuzzleChecker::IsInColValid(const int value, const std::vector<std::vector<int>>& puzzle,
+    const int row, const int col)
 {
     // Boundary check
     if ((row >= kDim) || (col >= kDim))
@@ -54,8 +54,8 @@ int PuzzleChecker::IsInColValid(int value, const std::vector<std::vector<int>>& 
     return kOK;
 }
 
-int PuzzleChecker:: IsInGroupValid(int value, const std::vector<std::vector<int>>& puzzle,
-    int row, int col)
+int PuzzleChecker:: IsInGroupValid(const int value, const std::vector<std::vector<int>>& puzzle,
+    const int row, const int col)
 {
     int row_start{ 0 }, col_start{ 0 };
 
