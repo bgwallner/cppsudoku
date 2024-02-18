@@ -58,7 +58,7 @@ int PuzzleSolver::ForwardSolver(std::vector<std::vector<int>>& puzzle)
                 // Try to solve for recursion N+1 with the 'new' puzzle
                 if (kOK == ForwardSolver(puzzle))
                 {
-                    // Puzzle solved (will generate an avalange of E_OK).
+                    // Puzzle solved (will generate an avalange of kOK).
                     // We will not end up here until it has been detected
                     // that no zero-elements can be found.
                     return kOK;
@@ -74,7 +74,7 @@ int PuzzleSolver::ForwardSolver(std::vector<std::vector<int>>& puzzle)
     {
         // No zeros found, all cells have a value and we are done.
         // This is the first E_OK status which will fulfill
-        // if(E_OK == solve_puzzle_increment(puzzle)).
+        // if (kOK == ForwardSolver(puzzle)).
         return kOK;
     }
 }
@@ -102,9 +102,9 @@ int PuzzleSolver::BackwardSolver(std::vector<std::vector<int>>& puzzle)
                 puzzle[row][col] = value;
 
                 // Try to solve for recursion N+1 with the 'new' puzzle
-                if (kOK == ForwardSolver(puzzle))
+                if (kOK == BackwardSolver(puzzle))
                 {
-                    // Puzzle solved (will generate an avalange of E_OK).
+                    // Puzzle solved (will generate an avalange of kOK).
                     // We will not end up here until it has been detected
                     // that no zero-elements can be found.
                     return kOK;
@@ -120,7 +120,7 @@ int PuzzleSolver::BackwardSolver(std::vector<std::vector<int>>& puzzle)
     {
         // No zeros found, all cells have a value and we are done.
         // This is the first E_OK status which will fulfill
-        // if(E_OK == solve_puzzle_increment(puzzle)).
+        // if (kOK == BackwardSolver(puzzle))
         return kOK;
     }
 }
