@@ -76,14 +76,14 @@ int main()
     std::cout << " *** Creation of puzzle ***" << '\n';
     std::cout << '\n';
 
-    int NoOfClues{ 0 };
+    int nbr_of_clues{ 0 };
     std::cout << "Enter number of clues in range 20->35: ";
-    std::cin >> NoOfClues;
+    std::cin >> nbr_of_clues;
     std::cout << std::endl;
     try
     {
         // Create a puzzle and its solution
-        puzzle_creator::PuzzleCreator creator(NoOfClues);
+        puzzle_creator::PuzzleCreator creator(nbr_of_clues);
 
         // Get the result
         std::vector<std::vector<int>> sudoku = creator.GetSudokuPuzzle();
@@ -94,6 +94,10 @@ int main()
         std::cout << '\n';
         printer.PrintPuzzleToConsole(solution);
         std::cout << '\n';
+        std::cout << "Number of recursions needed:" << creator.GetNbrOfRecursions() << '\n';
+        std::cout << "Number of not unique puzzles created:" << creator.GetNumberOfNotUnique() << '\n';
+        std::cout << "Number of not solvable puzzles created:" << creator.GetNumberOfNotSolved() << '\n';
+        std::cout << "Ratio not unique/not solved:" << 1.0*creator.GetNumberOfNotUnique()/creator.GetNumberOfNotSolved() << '\n';
     }
     catch (const std::invalid_argument& e)
     {

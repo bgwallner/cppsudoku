@@ -3,9 +3,19 @@
 
 #include <vector>
 
+#include "puzzle_checker.h"
+#include "puzzle_solver.h"
+
 namespace puzzle_creator {
 
 class PuzzleCreator {
+
+    // Puzzle checker object
+    //puzzle_checker::PuzzleChecker checker;
+
+    //Puzzle solver object
+	//puzzle_solver::PuzzleSolver solver;
+
 	// Sudoku will contain the puzzle to be solved
 	std::vector<std::vector<int>> sudoku;
 
@@ -16,20 +26,25 @@ class PuzzleCreator {
 	std::vector<std::vector<int>> solution_bw;
 
 	// Number of clues provided in constructor
-	int NbrOfClues{ 0 };
+	int nbr_of_clues{0};
+
+	// Metrics
+	long nbr_not_solved{0};
+	long nbr_not_unique{0};
+	long nbr_of_recursions{0};
 
 	// Runs the creation of the sodoku
 	int RunPuzzleCreator(void);
 
 	//Create a random sudoku-candidate
-	int CreateRandomCandidate(void);
+	int CreateRandomCandidate(puzzle_checker::PuzzleChecker& checker);
 
 	// Set private members to 0
 	int ClearPrivateData(void);
 
 public:
 	PuzzleCreator() = delete;
-	PuzzleCreator(const int NoOfClues);
+	PuzzleCreator(const int no_of_clues);
 	~PuzzleCreator();
 
 	// Return a copy of the solved puzzle
@@ -37,6 +52,11 @@ public:
 
 	// Return sudoku puzzle
 	std::vector<std::vector<int>> GetSudokuPuzzle(void);
+
+     // Metrics
+	long GetNumberOfNotSolved() {return nbr_not_solved;};
+	long GetNumberOfNotUnique() {return nbr_not_unique;};
+	long GetNbrOfRecursions() {return nbr_of_recursions;};
 
 };
 

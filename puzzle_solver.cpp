@@ -1,7 +1,6 @@
 #include "puzzle_solver.h"
 
 #include "constants.h"
-#include "puzzle_checker.h"
 
 namespace puzzle_solver
 {
@@ -32,7 +31,6 @@ PuzzleSolver::~PuzzleSolver() {};
 int PuzzleSolver::ForwardSolver(std::vector<std::vector<int>>& puzzle)
 {
     int row{ 0 }, col{ 0 };
-    puzzle_checker::PuzzleChecker checker;
 
     // Increase counter for every recursion
     recursion_counter++;
@@ -77,7 +75,6 @@ int PuzzleSolver::ForwardSolver(std::vector<std::vector<int>>& puzzle)
 int PuzzleSolver::BackwardSolver(std::vector<std::vector<int>>& puzzle)
 {
     int row{ 0 }, col{ 0 };
-    puzzle_checker::PuzzleChecker checker;
 
     // Increase counter for every recursion
     recursion_counter++;

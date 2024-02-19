@@ -4,9 +4,8 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <random>
 
-#include "puzzle_solver.h"
-#include "puzzle_checker.h"
 #include "constants.h"
 
 namespace puzzle_creator
@@ -15,9 +14,9 @@ namespace puzzle_creator
 constexpr int kMaxClues{ 35u };
 constexpr int kMinClues{ 20u };
 
-PuzzleCreator::PuzzleCreator(const int NoOfClues)
+PuzzleCreator::PuzzleCreator(const int no_of_clues)
 {
-	if (kMaxClues < NoOfClues || kMinClues > NoOfClues)
+	if (kMaxClues < no_of_clues || kMinClues > no_of_clues)
 	{
 		throw std::invalid_argument("ERROR: Number of clues out of range {20..35}.");
 		std::cout << "\n";
@@ -27,7 +26,7 @@ PuzzleCreator::PuzzleCreator(const int NoOfClues)
 	sudoku.resize(kDim, std::vector<int>(kDim));
     solution_bw.resize(kDim, std::vector<int>(kDim));
 
-    NbrOfClues = NoOfClues;
+    nbr_of_clues = no_of_clues;
 	RunPuzzleCreator();
 }
 
@@ -36,32 +35,41 @@ PuzzleCreator::~PuzzleCreator() {};
 int PuzzleCreator::RunPuzzleCreator(void)
 {
     bool unique{ false };
+    puzzle_checker::PuzzleChecker checker;
     puzzle_solver::PuzzleSolver solver;
 
     while (!unique)
     {
         // Start creating a random candidate
-        CreateRandomCandidate();
+        CreateRandomCandidate(checker);
 
         // Invoke solver
         if (kOK == solver.ForwardSolver(solution))
         {
+            // Only use counter from forward solving
+            nbr_of_recursions = solver.GetNumberOfRecursions();
+
+            // Solve backwards to check uniqueness
             solver.BackwardSolver(solution_bw);
             if (solution == solution_bw)
             {
-                // A unique Sudoku was 
+                // A unique Sudoku was found
                 unique = true;
             }
             else
             {
                 // Not unique, clear private data
+                nbr_not_unique++;
                 ClearPrivateData();
+                solver.ResetRecursionCounter();
             }
         }
         else
         {
             // Not possible to solve, clear private data
+            nbr_not_solved++;
             ClearPrivateData();
+            solver.ResetRecursionCounter();
         }
     }
     return kOK;
@@ -81,17 +89,20 @@ int PuzzleCreator::ClearPrivateData(void)
     return kOK;
 }
 
-int PuzzleCreator::CreateRandomCandidate(void)
+int PuzzleCreator::CreateRandomCandidate(puzzle_checker::PuzzleChecker& checker)
 {
     int iterations{ 0 }, row{ 0 }, col{ 0 }, value{ 0 };
-    puzzle_checker::PuzzleChecker checker;
+    //puzzle_checker::PuzzleChecker checker; // <--- remove
     
-    std::srand(static_cast<unsigned int>(std::time(nullptr))); // use current time as seed for random generator
-    while (iterations < NbrOfClues)
+    std::uniform_int_distribution<int> distribution(0, 8);
+    std::random_device rd;
+    std::mt19937 engine(rd());
+    //std::srand(static_cast<unsigned int>(std::time(nullptr))); // use current time as seed for random generator
+    while (iterations < nbr_of_clues)
     {
-        row = std::rand() % kDim;
-        col = std::rand() % kDim;
-        value = std::rand() % kDim + 1;
+        row = distribution(engine);
+        col = distribution(engine);
+        value = distribution(engine) + 1;
 
         /* Only place if value is zero */
         if (0 == sudoku[row][col])

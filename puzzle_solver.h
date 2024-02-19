@@ -3,15 +3,21 @@
 
 #include <vector>
 
+#include "puzzle_checker.h"
+
 namespace puzzle_solver {
 
 class PuzzleSolver {
 
-long recursion_counter{ 0 };
+	long recursion_counter{ 0 };
 
-// Get the first available element (value=0)
-int GetFirstFreeElement(const std::vector<std::vector<int>>& puzzle,
-	int& row, int& col);
+	// Get the first available element (value=0)
+	int GetFirstFreeElement(const std::vector<std::vector<int>>& puzzle,
+		int& row, int& col);
+
+    // Create checker object (otherwise created
+	// recursively in DFS)
+	puzzle_checker::PuzzleChecker checker;
 
 public:
 	PuzzleSolver();
@@ -25,6 +31,9 @@ public:
 
 	// Get number of recursions needed for solver
 	long GetNumberOfRecursions(void) { return recursion_counter; }
+
+	// Reset recursion counter
+	void ResetRecursionCounter(void) { recursion_counter=0;};
 
 };
 
