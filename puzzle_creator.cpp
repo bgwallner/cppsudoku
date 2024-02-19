@@ -92,12 +92,12 @@ int PuzzleCreator::ClearPrivateData(void)
 int PuzzleCreator::CreateRandomCandidate(puzzle_checker::PuzzleChecker& checker)
 {
     int iterations{ 0 }, row{ 0 }, col{ 0 }, value{ 0 };
-    //puzzle_checker::PuzzleChecker checker; // <--- remove
     
+    // Add random number generator
     std::uniform_int_distribution<int> distribution(0, 8);
     std::random_device rd;
     std::mt19937 engine(rd());
-    //std::srand(static_cast<unsigned int>(std::time(nullptr))); // use current time as seed for random generator
+
     while (iterations < nbr_of_clues)
     {
         row = distribution(engine);

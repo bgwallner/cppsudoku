@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <string>
+#include <chrono>
+#include <ctime>
 
 #include "file_io.h"
 #include "puzzle_checker.h"
@@ -82,8 +84,18 @@ int main()
     std::cout << std::endl;
     try
     {
+        // Measure time
+        std::chrono::time_point<std::chrono::system_clock> start, end;
+        start = std::chrono::system_clock::now();
+        std::time_t start_time = std::chrono::system_clock::to_time_t(start);
+    
         // Create a puzzle and its solution
         puzzle_creator::PuzzleCreator creator(nbr_of_clues);
+
+        // End measurement
+        end = std::chrono::system_clock::now();
+        std::chrono::duration<double> elapsed_seconds = end - start;
+        std::time_t end_time = std::chrono::system_clock::to_time_t(end);
 
         // Get the result
         std::vector<std::vector<int>> sudoku = creator.GetSudokuPuzzle();
@@ -94,10 +106,18 @@ int main()
         std::cout << '\n';
         printer.PrintPuzzleToConsole(solution);
         std::cout << '\n';
+        std::cout << "Started computation at " << std::ctime(&start_time);
+        std::cout << "Finished computation at " << std::ctime(&end_time)
+                  << "Elapsed time: " << elapsed_seconds.count() << "s\n";
         std::cout << "Number of recursions needed:" << creator.GetNbrOfRecursions() << '\n';
-        std::cout << "Number of not unique puzzles created:" << creator.GetNumberOfNotUnique() << '\n';
-        std::cout << "Number of not solvable puzzles created:" << creator.GetNumberOfNotSolved() << '\n';
-        std::cout << "Ratio not unique/not solved:" << 1.0*creator.GetNumberOfNotUnique()/creator.GetNumberOfNotSolved() << '\n';
+        std::cout << "Number of not unique puzzles created:" 
+                  << creator.GetNumberOfNotUnique() << '\n';
+        std::cout << "Number of not solvable puzzles created:"
+                  << creator.GetNumberOfNotSolved() << '\n';
+        std::cout << "Ratio not unique/not solved:"
+                  << 1.0*creator.GetNumberOfNotUnique()/creator.GetNumberOfNotSolved() << '\n';
+        std::cout << "Average solving time per puzzle:"
+                  << elapsed_seconds.count()*1000/(creator.GetNumberOfNotSolved()+creator.GetNumberOfNotUnique()) << " ms" << '\n';
     }
     catch (const std::invalid_argument& e)
     {
