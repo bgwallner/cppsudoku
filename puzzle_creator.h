@@ -10,12 +10,6 @@ namespace puzzle_creator {
 
 class PuzzleCreator {
 
-    // Puzzle checker object
-    //puzzle_checker::PuzzleChecker checker;
-
-    //Puzzle solver object
-	//puzzle_solver::PuzzleSolver solver;
-
 	// Sudoku will contain the puzzle to be solved
 	std::vector<std::vector<int>> sudoku;
 
