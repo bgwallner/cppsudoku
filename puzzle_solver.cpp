@@ -24,6 +24,71 @@ int PuzzleSolver::GetFirstFreeElement(const std::vector<std::vector<int>>& puzzl
     return kNotOK;
 }
 
+int PuzzleSolver::GetRowSum(const std::vector<std::vector<int>>& puzzle,
+	const int row)
+{
+    int row_sum{0};
+    for(int col_{0}; col_<kDim; col_++)
+    {
+        row_sum += puzzle[row][col_];
+    }
+    return row_sum;
+}
+
+int PuzzleSolver::GetColSum(const std::vector<std::vector<int>>& puzzle,
+	const int col)
+{
+    int col_sum{0};
+    for(int row_{0}; row_<kDim; row_++)
+    {
+        col_sum += puzzle[row_][col];
+    }
+    return col_sum;
+}
+
+int PuzzleSolver::GetGroupSum(const std::vector<std::vector<int>>& puzzle,
+	const int row, const int col)
+{
+    return 0;
+}
+
+int PuzzleSolver::GetElementMRV(const std::vector<std::vector<int>>& puzzle,
+	int& row, int& col)
+{
+    int score{0}, highest_score{0}, status{kNotOK};
+
+    // Find first element having value = 0 and calculate how constrained
+    // element is. If none found puzzle is solved.
+    for (int row_{ 0 }; row_ < kDim; row_++)
+    {
+        for (int col_{ 0 }; col_ < kDim; col_++)
+        {
+            if (0 == puzzle[row_][col_])
+            {
+                // Calculate score for row
+                score = GetRowSum(puzzle, row_);
+                // Calculate score for col
+                score += GetColSum(puzzle, col_);
+                // Calculate score for group
+                score += GetGroupSum(puzzle, row_, col_);
+
+                // Check against highest score
+                if(score > highest_score)
+                {
+                    highest_score = score;
+                    row = row_;
+                    col = col_;
+                }
+
+                // Status is kOK until no element with
+                // value = 0 can be found
+                status = kOK;
+            }
+        }
+    }
+    return status;
+}
+
 PuzzleSolver::PuzzleSolver() {};
 
 PuzzleSolver::~PuzzleSolver() {};

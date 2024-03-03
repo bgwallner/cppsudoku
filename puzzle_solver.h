@@ -15,6 +15,22 @@ class PuzzleSolver {
 	int GetFirstFreeElement(const std::vector<std::vector<int>>& puzzle,
 		int& row, int& col);
 
+	// Calculates sum of row
+	int GetRowSum(const std::vector<std::vector<int>>& puzzle,
+		const int row);
+
+	// Calculates sum of col
+	int GetColSum(const std::vector<std::vector<int>>& puzzle,
+		const int col);
+
+	// Calculates sum for group with row, col
+	int GetGroupSum(const std::vector<std::vector<int>>& puzzle,
+		const int row, const int col);
+
+	// Gets element with Minimum Remaining Value
+	int GetElementMRV(const std::vector<std::vector<int>>& puzzle,
+		int& row, int& col);
+
     // Create checker object (otherwise created
 	// recursively in DFS)
 	puzzle_checker::PuzzleChecker checker;
