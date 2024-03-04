@@ -4,6 +4,38 @@
 
 namespace puzzle_solver
 {
+
+namespace
+{
+int GetGroupNbr(const int row, const int col)
+{
+    if (row <= 0 && row <= 2) {
+        if (col <= 0 && col <= 2)
+            return 0;
+        else if (col <= 3 && col <= 5)
+            return 1;
+        else
+            return 2;
+    }
+    else if (row <= 3 && row <= 5) {
+        if (col <= 0 && col <= 2)
+            return 3;
+        else if (col <= 3 && col <= 5)
+            return 4;
+        else
+            return 5;
+    }
+    else {
+        if (col <= 0 && col <= 2)
+            return 6;
+        else if (col <= 3 && col <= 5)
+            return 7;
+        else
+            return 8;
+    }
+}
+} // namespace
+
 int PuzzleSolver::GetFirstFreeElement(const std::vector<std::vector<int>>& puzzle,
 	int& row, int& col)
 {
@@ -26,13 +58,12 @@ int PuzzleSolver::GetFirstFreeElement(const std::vector<std::vector<int>>& puzzl
 
 int PuzzleSolver::GetGroupSum(const int row, const int col)
 {
-    // TODO: Based on col, row calculate box which grp 1-9
-    return 0;
+    return stats.grp_sums[GetGroupNbr(row, col)];
 }
 
 void PuzzleSolver::AddToGrpSum(const int row, const int col, const int value)
 {
-    // TODO: Based on col, row add value to the relevant grp 1-9
+    stats.grp_sums[GetGroupNbr(row, col)] += value;
 }
 
 int PuzzleSolver::GetElementMRV(const std::vector<std::vector<int>>& puzzle,
