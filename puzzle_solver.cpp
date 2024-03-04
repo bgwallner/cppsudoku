@@ -5,7 +5,7 @@
 namespace puzzle_solver
 {
 
-namespace
+inline namespace
 {
 int GetGroupNbr(const int row, const int col)
 {
@@ -54,6 +54,11 @@ int PuzzleSolver::GetFirstFreeElement(const std::vector<std::vector<int>>& puzzl
         }
     }
     return kNotOK;
+}
+
+void PuzzleSolver::InitializeStats(const std::vector<std::vector<int>>& puzzle)
+{
+
 }
 
 int PuzzleSolver::GetGroupSum(const int row, const int col)
@@ -201,6 +206,14 @@ int PuzzleSolver::MRVSolver(std::vector<std::vector<int>>& puzzle)
 
     // Increase counter for every recursion
     recursion_counter++;
+
+    // Initialize stats data structure first call
+    static bool called_once{ false };
+    if (!called_once) 
+    {
+        InitializeStats(puzzle);
+        called_once = true;
+    }
 
     // Find first element being most constrained
     if (kOK == GetElementMRV(puzzle, row, col))

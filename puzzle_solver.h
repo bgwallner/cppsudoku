@@ -31,6 +31,10 @@ class PuzzleSolver {
 	int GetFirstFreeElement(const std::vector<std::vector<int>>& puzzle,
 		int& row, int& col);
 
+	// Initialize the stats data structure. Used during first invocation
+	// in MRVSolver.
+	void InitializeStats(const std::vector<std::vector<int>>& puzzle);
+
 	// Calculates sum of row (used on empty puzzle with clues)
 	int GetRowSum(const int row) { return stats.row_sums[row]; };
 
