@@ -7,25 +7,47 @@
 
 namespace puzzle_solver {
 
+// The struct stats keep track of sums for row, col and group.
+// Initially it will be filled by going through the empty puzzle
+// containing clues only. During recursion it will be updated
+// continously when adding a new value to the puzzle. When puzzle
+// is solved all elements will be 45.
+struct stats {
+	std::vector<int> row_sums{ 0,0,0,0,0,0,0,0,0 };
+	std::vector<int> col_sums{ 0,0,0,0,0,0,0,0,0 };
+	std::vector<int> grp_sums{ 0,0,0,0,0,0,0,0,0 };
+};
+
 class PuzzleSolver {
 
+	// Used for measuring number of recursions
 	long recursion_counter{ 0 };
+
+	// Private member for keeping track of
+	// row, col and grp sums
+	stats stats;
 
 	// Get the first available element (value=0)
 	int GetFirstFreeElement(const std::vector<std::vector<int>>& puzzle,
 		int& row, int& col);
 
-	// Calculates sum of row
-	int GetRowSum(const std::vector<std::vector<int>>& puzzle,
-		const int row);
+	// Calculates sum of row (used on empty puzzle with clues)
+	int GetRowSum(const int row) { return stats.row_sums[row]; };
 
-	// Calculates sum of col
-	int GetColSum(const std::vector<std::vector<int>>& puzzle,
-		const int col);
+	// Adds value to row
+	void AddToRowSum(const int row, const int value) { stats.row_sums[row] += value; };
 
-	// Calculates sum for group with row, col
-	int GetGroupSum(const std::vector<std::vector<int>>& puzzle,
-		const int row, const int col);
+	// Calculates sum of col  (used on empty puzzle with clues)
+	int GetColSum(const int col) { return stats.col_sums[col]; };
+
+	// Adds value to col
+	void AddToColSum(const int col, const int value) { stats.row_sums[col] += value; };
+
+	// Calculates sum for group with row, col  (used on empty puzzle with clues)
+	int GetGroupSum(const int row, const int col);
+
+	// Adds value to grp
+	void AddToGrpSum(const int row, const int col, const int value);
 
 	// Gets element with Minimum Remaining Value
 	int GetElementMRV(const std::vector<std::vector<int>>& puzzle,
@@ -44,6 +66,9 @@ public:
 
 	// Solve puzzle using DFS by evaluating values 9->1
 	int BackwardSolver(std::vector<std::vector<int>>& puzzle);
+
+	// Solve puzzle using Minimum Remaining Value strategy
+	int MRVSolver(std::vector<std::vector<int>>& puzzle);
 
 	// Get number of recursions needed for solver
 	long GetNumberOfRecursions(void) { return recursion_counter; }

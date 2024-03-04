@@ -24,32 +24,15 @@ int PuzzleSolver::GetFirstFreeElement(const std::vector<std::vector<int>>& puzzl
     return kNotOK;
 }
 
-int PuzzleSolver::GetRowSum(const std::vector<std::vector<int>>& puzzle,
-	const int row)
+int PuzzleSolver::GetGroupSum(const int row, const int col)
 {
-    int row_sum{0};
-    for(int col_{0}; col_<kDim; col_++)
-    {
-        row_sum += puzzle[row][col_];
-    }
-    return row_sum;
-}
-
-int PuzzleSolver::GetColSum(const std::vector<std::vector<int>>& puzzle,
-	const int col)
-{
-    int col_sum{0};
-    for(int row_{0}; row_<kDim; row_++)
-    {
-        col_sum += puzzle[row_][col];
-    }
-    return col_sum;
-}
-
-int PuzzleSolver::GetGroupSum(const std::vector<std::vector<int>>& puzzle,
-	const int row, const int col)
-{
+    // TODO: Based on col, row calculate box which grp 1-9
     return 0;
+}
+
+void PuzzleSolver::AddToGrpSum(const int row, const int col, const int value)
+{
+    // TODO: Based on col, row add value to the relevant grp 1-9
 }
 
 int PuzzleSolver::GetElementMRV(const std::vector<std::vector<int>>& puzzle,
@@ -57,8 +40,8 @@ int PuzzleSolver::GetElementMRV(const std::vector<std::vector<int>>& puzzle,
 {
     int score{0}, highest_score{0}, status{kNotOK};
 
-    // Find first element having value = 0 and calculate how constrained
-    // element is. If none found puzzle is solved.
+    // Find the most constrained zero-element.
+    // If none found puzzle is solved.
     for (int row_{ 0 }; row_ < kDim; row_++)
     {
         for (int col_{ 0 }; col_ < kDim; col_++)
@@ -66,11 +49,11 @@ int PuzzleSolver::GetElementMRV(const std::vector<std::vector<int>>& puzzle,
             if (0 == puzzle[row_][col_])
             {
                 // Calculate score for row
-                score = GetRowSum(puzzle, row_);
+                score = GetRowSum(row_);
                 // Calculate score for col
-                score += GetColSum(puzzle, col_);
+                score += GetColSum(col_);
                 // Calculate score for group
-                score += GetGroupSum(puzzle, row_, col_);
+                score += GetGroupSum(row_, col_);
 
                 // Check against highest score
                 if(score > highest_score)
@@ -177,6 +160,62 @@ int PuzzleSolver::BackwardSolver(std::vector<std::vector<int>>& puzzle)
         // No zeros found, all cells have a value and we are done.
         // This is the first E_OK status which will fulfill
         // if (kOK == BackwardSolver(puzzle))
+        return kOK;
+    }
+}
+
+int PuzzleSolver::MRVSolver(std::vector<std::vector<int>>& puzzle)
+{
+    int row{ 0 }, col{ 0 };
+
+    // Increase counter for every recursion
+    recursion_counter++;
+
+    // Find first element being most constrained
+    if (kOK == GetElementMRV(puzzle, row, col))
+    {
+        // Test all values from 1->kMaxVal
+        for (int value{ 1 }; value <= kMaxVal; value++)
+        {
+            // Check if uiValue is valid for (row, col)
+            if ((kOK == checker.IsInColValid(value, puzzle, row, col)) &&
+                (kOK == checker.IsInRowValid(value, puzzle, row, col)) &&
+                (kOK == checker.IsInGroupValid(value, puzzle, row, col)))
+            {
+                // Assign possible candidate for recursion N. */
+                puzzle[row][col] = value;
+
+                // Add value to row_sum, col_sum and grp_sum.
+                AddToRowSum(row, value);
+                AddToColSum(col, value);
+                AddToGrpSum(row, col, value);
+
+                // Try to solve for recursion N+1 with the 'new' puzzle
+                if (kOK == MRVSolver(puzzle))
+                {
+                    // Puzzle solved (will generate an avalange of kOK).
+                    // We will not end up here until it has been detected
+                    // that no zero-elements can be found.
+                    return kOK;
+                }
+                else
+                {
+                    // Remove value from row_sum, col_sum and grp_sum.
+                    AddToRowSum(row, -value);
+                    AddToColSum(col, -value);
+                    AddToGrpSum(row, col, -value);
+                }
+            }
+        }
+        // Puzzle could not be solved for any value= 1..9, need to backtrack.
+        puzzle[row][col] = 0;
+        return kNotOK;
+    }
+    else
+    {
+        // No zeros found, all cells have a value and we are done.
+        // This is the first E_OK status which will fulfill
+        // if (kOK == MRVSolver(puzzle))
         return kOK;
     }
 }
