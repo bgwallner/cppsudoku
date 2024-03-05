@@ -25,8 +25,9 @@ int main()
         // Get current stored puzzle in class
         std::vector<std::vector<int>> v = puzzle.GetPuzzle();
 
-        // Make a copy of the puzzle
+        // Make copies of the puzzle
         std::vector<std::vector<int>> u = v;
+        std::vector<std::vector<int>> t = v;
 
         // Print the fetched puzzle
         puzzle.PrintPuzzleToConsole(v);
@@ -34,8 +35,7 @@ int main()
 
         // Solve the puzzle forward solver
         puzzle_solver::PuzzleSolver sudoku_fwd;
-        //sudoku_fwd.ForwardSolver(v);
-        sudoku_fwd.MRVSolver(v);
+        sudoku_fwd.ForwardSolver(v);
         
         // Print the solved puzzle
         std::cout << "*** Solving puzzle with forward solver ***" << '\n';
@@ -68,6 +68,18 @@ int main()
             std::cout << "RESULT: Puzzle is NOT unique.";
             std::cout << '\n';
         }
+        // Solve the puzzle MRV solver
+        puzzle_solver::PuzzleSolver sudoku_mrv;
+        sudoku_mrv.MRVSolver(t);
+
+        // Print the solved puzzle
+        std::cout << '\n';
+        std::cout << "*** Solving puzzle with MRV solver ***" << '\n';
+        std::cout << '\n';
+        puzzle.PrintPuzzleToConsole(t);
+        std::cout << '\n';
+        std::cout << "Number of recursions needed : " << sudoku_mrv.GetNumberOfRecursions() << '\n';
+        std::cout << '\n';
     }
     catch (const std::invalid_argument& e)
     {
