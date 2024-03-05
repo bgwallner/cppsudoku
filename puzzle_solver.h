@@ -11,7 +11,10 @@ namespace puzzle_solver {
 // Initially it will be filled by going through the empty puzzle
 // containing clues only. During recursion it will be updated
 // continously when adding a new value to the puzzle. When puzzle
-// is solved all elements will be 45.
+// is solved all elements will be 9.
+
+// Example) If row[3] = 1 0 0 5 4 2 0 0 0 we will have 
+//          row_sums = [0 0 0 4 0 0 0 0 0]
 struct stats {
 	std::vector<int> row_sums{ 0,0,0,0,0,0,0,0,0 };
 	std::vector<int> col_sums{ 0,0,0,0,0,0,0,0,0 };
@@ -45,7 +48,7 @@ class PuzzleSolver {
 	int GetColSum(const int col) { return stats.col_sums[col]; };
 
 	// Adds value to col
-	void AddToColSum(const int col, const int value) { stats.row_sums[col] += value; };
+	void AddToColSum(const int col, const int value) { stats.col_sums[col] += value; };
 
 	// Calculates sum for group with row, col  (used on empty puzzle with clues)
 	int GetGroupSum(const int row, const int col);

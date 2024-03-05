@@ -34,7 +34,8 @@ int main()
 
         // Solve the puzzle forward solver
         puzzle_solver::PuzzleSolver sudoku_fwd;
-        sudoku_fwd.ForwardSolver(v);
+        //sudoku_fwd.ForwardSolver(v);
+        sudoku_fwd.MRVSolver(v);
         
         // Print the solved puzzle
         std::cout << "*** Solving puzzle with forward solver ***" << '\n';

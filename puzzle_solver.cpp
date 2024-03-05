@@ -9,26 +9,26 @@ inline namespace
 {
 int GetGroupNbr(const int row, const int col)
 {
-    if (row <= 0 && row <= 2) {
-        if (col <= 0 && col <= 2)
+    if (row >= 0 && row <= 2) {
+        if (col >= 0 && col <= 2)
             return 0;
-        else if (col <= 3 && col <= 5)
+        else if (col >= 3 && col <= 5)
             return 1;
         else
             return 2;
     }
-    else if (row <= 3 && row <= 5) {
-        if (col <= 0 && col <= 2)
+    else if (row >= 3 && row <= 5) {
+        if (col >= 0 && col <= 2)
             return 3;
-        else if (col <= 3 && col <= 5)
+        else if (col >= 3 && col <= 5)
             return 4;
         else
             return 5;
     }
     else {
-        if (col <= 0 && col <= 2)
+        if (col >= 0 && col <= 2)
             return 6;
-        else if (col <= 3 && col <= 5)
+        else if (col >= 3 && col <= 5)
             return 7;
         else
             return 8;
@@ -58,7 +58,41 @@ int PuzzleSolver::GetFirstFreeElement(const std::vector<std::vector<int>>& puzzl
 
 void PuzzleSolver::InitializeStats(const std::vector<std::vector<int>>& puzzle)
 {
+    // Initialize for row
+    for (int row{ 0 }; row < kDim; row++)
+    {
+        for (int col{ 0 }; col < kDim; col++)
+        {
+            if (puzzle[row][col] != 0)
+            {
+                AddToRowSum(row, 1);
+            }
+        }
+    }
 
+    // Initialize for col
+    for (int col{ 0 }; col < kDim; col++)
+    {
+        for (int row{ 0 }; row < kDim; row++)
+        {
+            if (puzzle[row][col] != 0)
+            {
+                AddToColSum(row, 1);
+            }
+        }
+    }
+
+    // Initialize for grp
+    for (int col{ 0 }; col < kDim; col++)
+    {
+        for (int row{ 0 }; row < kDim; row++)
+        {
+            if (puzzle[row][col] != 0)
+            {
+                AddToGrpSum(row, col, 1);
+            }
+        }
+    }
 }
 
 int PuzzleSolver::GetGroupSum(const int row, const int col)
@@ -215,7 +249,7 @@ int PuzzleSolver::MRVSolver(std::vector<std::vector<int>>& puzzle)
         called_once = true;
     }
 
-    // Find first element being most constrained
+    // Find first element with least possibilities
     if (kOK == GetElementMRV(puzzle, row, col))
     {
         // Test all values from 1->kMaxVal
@@ -230,9 +264,9 @@ int PuzzleSolver::MRVSolver(std::vector<std::vector<int>>& puzzle)
                 puzzle[row][col] = value;
 
                 // Add value to row_sum, col_sum and grp_sum.
-                AddToRowSum(row, value);
-                AddToColSum(col, value);
-                AddToGrpSum(row, col, value);
+                AddToRowSum(row, 1);
+                AddToColSum(col, 1);
+                AddToGrpSum(row, col, 1);
 
                 // Try to solve for recursion N+1 with the 'new' puzzle
                 if (kOK == MRVSolver(puzzle))
@@ -245,9 +279,9 @@ int PuzzleSolver::MRVSolver(std::vector<std::vector<int>>& puzzle)
                 else
                 {
                     // Remove value from row_sum, col_sum and grp_sum.
-                    AddToRowSum(row, -value);
-                    AddToColSum(col, -value);
-                    AddToGrpSum(row, col, -value);
+                    AddToRowSum(row, -1);
+                    AddToColSum(col, -1);
+                    AddToGrpSum(row, col, -1);
                 }
             }
         }
