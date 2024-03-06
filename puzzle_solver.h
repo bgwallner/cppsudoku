@@ -15,7 +15,7 @@ namespace puzzle_solver {
 
 // Example) If row[3] = 1 0 0 5 4 2 0 0 0 we will have 
 //          row_sums = [0 0 0 4 0 0 0 0 0]
-struct stats {
+struct HeuristicStats {
 	std::vector<int> row_sums{ 0,0,0,0,0,0,0,0,0 };
 	std::vector<int> col_sums{ 0,0,0,0,0,0,0,0,0 };
 	std::vector<int> grp_sums{ 0,0,0,0,0,0,0,0,0 };
@@ -28,7 +28,7 @@ class PuzzleSolver {
 
 	// Private member for keeping track of
 	// row, col and grp sums
-	stats stats;
+	HeuristicStats stats;
 
 	// Get the first available element (value=0)
 	int GetFirstFreeElement(const std::vector<std::vector<int>>& puzzle,
