@@ -60,6 +60,9 @@ class PuzzleSolver {
 	int GetElementMRV(const std::vector<std::vector<int>>& puzzle,
 		int& row, int& col);
 
+	// Completes the groups having 8 elements
+	void CompleteEigthElemGroups(std::vector<std::vector<int>>& puzzle);
+
     // Create checker object (otherwise created
 	// recursively in DFS)
 	puzzle_checker::PuzzleChecker checker;

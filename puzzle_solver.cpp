@@ -1,5 +1,8 @@
 #include "puzzle_solver.h"
 
+#include <tuple>
+#include <iostream>
+
 #include "constants.h"
 
 namespace puzzle_solver
@@ -7,33 +10,21 @@ namespace puzzle_solver
 
 inline namespace
 {
+
 int GetGroupNbr(const int row, const int col)
 {
-    if (row >= 0 && row <= 2) {
-        if (col >= 0 && col <= 2)
-            return 0;
-        else if (col >= 3 && col <= 5)
-            return 1;
-        else
-            return 2;
-    }
-    else if (row >= 3 && row <= 5) {
-        if (col >= 0 && col <= 2)
-            return 3;
-        else if (col >= 3 && col <= 5)
-            return 4;
-        else
-            return 5;
-    }
-    else {
-        if (col >= 0 && col <= 2)
-            return 6;
-        else if (col >= 3 && col <= 5)
-            return 7;
-        else
-            return 8;
-    }
+    int grp_row = row / 3;
+    int grp_col = col / 3;
+    return grp_row * 3 + grp_col;
 }
+
+std::tuple<int, int> GetRowColFromGrp(const int grp_nbr)
+{
+    int start_row = (grp_nbr / 3) * 3;
+    int start_col = (grp_nbr % 3) * 3;
+    return std::make_tuple(start_row, start_col);
+}
+
 } // namespace
 
 int PuzzleSolver::GetFirstFreeElement(const std::vector<std::vector<int>>& puzzle,
@@ -58,7 +49,7 @@ int PuzzleSolver::GetFirstFreeElement(const std::vector<std::vector<int>>& puzzl
 
 void PuzzleSolver::InitializeStats(const std::vector<std::vector<int>>& puzzle)
 {
-    // Initialize for row
+    // Initialize for row and grp
     for (int row{ 0 }; row < kDim; row++)
     {
         for (int col{ 0 }; col < kDim; col++)
@@ -66,6 +57,7 @@ void PuzzleSolver::InitializeStats(const std::vector<std::vector<int>>& puzzle)
             if (puzzle[row][col] != 0)
             {
                 AddToRowSum(row, 1);
+                AddToGrpSum(row, col, 1);
             }
         }
     }
@@ -78,18 +70,6 @@ void PuzzleSolver::InitializeStats(const std::vector<std::vector<int>>& puzzle)
             if (puzzle[row][col] != 0)
             {
                 AddToColSum(row, 1);
-            }
-        }
-    }
-
-    // Initialize for grp
-    for (int col{ 0 }; col < kDim; col++)
-    {
-        for (int row{ 0 }; row < kDim; row++)
-        {
-            if (puzzle[row][col] != 0)
-            {
-                AddToGrpSum(row, col, 1);
             }
         }
     }
@@ -141,6 +121,57 @@ int PuzzleSolver::GetElementMRV(const std::vector<std::vector<int>>& puzzle,
     }
     return status;
 }
+
+void PuzzleSolver::CompleteEigthElemGroups(std::vector<std::vector<int>>& puzzle)
+{
+    // Check if any group has 8 elements and in case add them to a vector
+    std::vector<int> indexes;
+    for (int i{ 0 }; i < stats.grp_sums.size(); i++)
+    {
+        if (stats.grp_sums[i] == 8) {
+            indexes.push_back(i);
+        }
+    }
+
+    // Get the start row, col from group
+    for (int i{ 0 }; i < indexes.size(); i++)
+    {
+        std::tuple<int, int> row_col = GetRowColFromGrp(indexes[i]);
+        
+        int row = std::get<0>(row_col);
+        int col = std::get<1>(row_col);
+
+        if (row > 6 || col > 6)
+        {
+            std::cout << "doughhhhhh";
+        }
+
+        // Get the missing number (total grp sum = 45)
+        int nbr = 45 - (puzzle[row][col] + puzzle[row][col + 1] + puzzle[row][col + 2] +
+            puzzle[row + 1][col] + puzzle[row + 1][col + 1] + puzzle[row + 1][col + 2] +
+            puzzle[row + 2][col] + puzzle[row + 2][col + 1] + puzzle[row + 2][col + 2]);
+
+        // Get the row, col where nbr is zero
+        int row_{ 0 };
+        int col_{ 0 };
+        for (row_=row; row_ <= (row + 2); row_++)
+        {
+            for (col_=col; col_ <= (col + 2); col_++)
+            {
+                if (puzzle[row_][col_] == 0)
+                {
+                    puzzle[row_][col_] = nbr;
+
+                    // Update stats data structure
+                    AddToRowSum(row_, 1);
+                    AddToColSum(col_, 1);
+                    AddToGrpSum(row_, col_, 1);
+                }
+            }
+        }
+    }
+}
+
 
 PuzzleSolver::PuzzleSolver() {};
 
@@ -249,7 +280,10 @@ int PuzzleSolver::MRVSolver(std::vector<std::vector<int>>& puzzle)
         called_once = true;
     }
 
-    // Find first element with least possibilities
+    // Complete groups with 8 elements if present
+    //CompleteEigthElemGroups(puzzle);
+
+    // Find the element with least possibilities
     if (kOK == GetElementMRV(puzzle, row, col))
     {
         // Test all values from 1->kMaxVal
