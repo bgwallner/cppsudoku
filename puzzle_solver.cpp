@@ -122,8 +122,10 @@ int PuzzleSolver::GetElementMRV(const std::vector<std::vector<int>>& puzzle,
     return status;
 }
 
-void PuzzleSolver::CompleteEigthElemGroups(std::vector<std::vector<int>>& puzzle)
+std::vector<std::tuple<int,int>> PuzzleSolver::CompleteEigthElemGroups(std::vector<std::vector<int>>& puzzle)
 {
+    // Data structure for keeping track of assigned zero index
+    std::vector<std::tuple<int,int>> zero_elems{};
     // Check if any group has 8 elements and in case add them to a vector
     std::vector<int> indexes;
     for (int i{ 0 }; i < stats.grp_sums.size(); i++)
@@ -141,11 +143,6 @@ void PuzzleSolver::CompleteEigthElemGroups(std::vector<std::vector<int>>& puzzle
         int row = std::get<0>(row_col);
         int col = std::get<1>(row_col);
 
-        if (row > 6 || col > 6)
-        {
-            std::cout << "doughhhhhh";
-        }
-
         // Get the missing number (total grp sum = 45)
         int nbr = 45 - (puzzle[row][col] + puzzle[row][col + 1] + puzzle[row][col + 2] +
             puzzle[row + 1][col] + puzzle[row + 1][col + 1] + puzzle[row + 1][col + 2] +
@@ -154,6 +151,7 @@ void PuzzleSolver::CompleteEigthElemGroups(std::vector<std::vector<int>>& puzzle
         // Get the row, col where nbr is zero
         int row_{ 0 };
         int col_{ 0 };
+        std::tuple<int,int> temp {0,0};
         for (row_=row; row_ <= (row + 2); row_++)
         {
             for (col_=col; col_ <= (col + 2); col_++)
@@ -166,12 +164,22 @@ void PuzzleSolver::CompleteEigthElemGroups(std::vector<std::vector<int>>& puzzle
                     AddToRowSum(row_, 1);
                     AddToColSum(col_, 1);
                     AddToGrpSum(row_, col_, 1);
+
+                    // Save row_ and col_ for later (if we need to revert)
+                    temp = {row_, col_};
+                    zero_elems.push_back(temp);
                 }
             }
         }
     }
+    return zero_elems;
 }
 
+void PuzzleSolver::RevertEightElemGroupAssign(std::vector<std::vector<int>>& puzzle,
+const std::vector<std::tuple<int, int>>& indexes)
+{
+
+}
 
 PuzzleSolver::PuzzleSolver() {};
 
@@ -280,8 +288,9 @@ int PuzzleSolver::MRVSolver(std::vector<std::vector<int>>& puzzle)
         called_once = true;
     }
 
-    // Complete groups with 8 elements if present
-    //CompleteEigthElemGroups(puzzle);
+    // Complete groups with 8 elements if present. Indexes needed if we need to
+    // backtrack.
+    // TODO: std::vector<std::tuple<int,int>> indexes = CompleteEigthElemGroups(puzzle);
 
     // Find the element with least possibilities
     if (kOK == GetElementMRV(puzzle, row, col))
@@ -319,7 +328,12 @@ int PuzzleSolver::MRVSolver(std::vector<std::vector<int>>& puzzle)
                 }
             }
         }
+
         // Puzzle could not be solved for any value= 1..9, need to backtrack.
+
+        // Revert assigned 8-element group completion
+        // TODO: RevertEightElemGroupAssign(puzzle, indexes);
+        // Zero out possibly assigned value
         puzzle[row][col] = 0;
         return kNotOK;
     }

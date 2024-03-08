@@ -61,7 +61,11 @@ class PuzzleSolver {
 		int& row, int& col);
 
 	// Completes the groups having 8 elements
-	void CompleteEigthElemGroups(std::vector<std::vector<int>>& puzzle);
+	std::vector<std::tuple<int,int>> CompleteEigthElemGroups(std::vector<std::vector<int>>& puzzle);
+
+	// Revert assigned from CompleteEigthElemGroups
+    void RevertEightElemGroupAssign(std::vector<std::vector<int>>& puzzle,
+	const std::vector<std::tuple<int, int>>& indexes);
 
     // Create checker object (otherwise created
 	// recursively in DFS)
