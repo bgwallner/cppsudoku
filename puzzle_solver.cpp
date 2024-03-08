@@ -138,7 +138,7 @@ std::vector<std::tuple<int,int>> PuzzleSolver::CompleteEigthElemGroups(std::vect
     // Get the start row, col from group
     for (int i{ 0 }; i < indexes.size(); i++)
     {
-        std::tuple<int, int> row_col = GetRowColFromGrp(indexes[i]);
+        std::tuple<int,int> row_col = GetRowColFromGrp(indexes[i]);
         
         int row = std::get<0>(row_col);
         int col = std::get<1>(row_col);
@@ -176,9 +176,19 @@ std::vector<std::tuple<int,int>> PuzzleSolver::CompleteEigthElemGroups(std::vect
 }
 
 void PuzzleSolver::RevertEightElemGroupAssign(std::vector<std::vector<int>>& puzzle,
-const std::vector<std::tuple<int, int>>& indexes)
+const std::vector<std::tuple<int,int>>& indexes)
 {
+    for(int i{0}; i<indexes.size(); i++)
+    {
+        int row = std::get<0>(indexes[i]);
+        int col = std::get<1>(indexes[i]);
+        puzzle[row][col] = 0;
 
+        // Remove value from row_sum, col_sum and grp_sum.
+        AddToRowSum(row, -1);
+        AddToColSum(col, -1);
+        AddToGrpSum(row, col, -1);
+    }
 }
 
 PuzzleSolver::PuzzleSolver() {};
@@ -289,8 +299,8 @@ int PuzzleSolver::MRVSolver(std::vector<std::vector<int>>& puzzle)
     }
 
     // Complete groups with 8 elements if present. Indexes needed if we need to
-    // backtrack.
-    // TODO: std::vector<std::tuple<int,int>> indexes = CompleteEigthElemGroups(puzzle);
+    // backtrack and value...
+    //std::vector<std::tuple<int,int>> indexes = CompleteEigthElemGroups(puzzle);
 
     // Find the element with least possibilities
     if (kOK == GetElementMRV(puzzle, row, col))
@@ -331,9 +341,9 @@ int PuzzleSolver::MRVSolver(std::vector<std::vector<int>>& puzzle)
 
         // Puzzle could not be solved for any value= 1..9, need to backtrack.
 
-        // Revert assigned 8-element group completion
-        // TODO: RevertEightElemGroupAssign(puzzle, indexes);
-        // Zero out possibly assigned value
+        // Revert assigned 8-element group completions
+        //RevertEightElemGroupAssign(puzzle, indexes);
+
         puzzle[row][col] = 0;
         return kNotOK;
     }
