@@ -69,7 +69,7 @@ void PuzzleSolver::InitializeStats(const std::vector<std::vector<int>>& puzzle)
         {
             if (puzzle[row][col] != 0)
             {
-                AddToColSum(row, 1);
+                AddToColSum(col, 1);
             }
         }
     }
