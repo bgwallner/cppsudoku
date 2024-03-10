@@ -122,15 +122,15 @@ int PuzzleSolver::GetElementMRV(const std::vector<std::vector<int>>& puzzle,
     return status;
 }
 
-std::vector<std::tuple<int,int>> PuzzleSolver::CompleteEigthElemGroups(std::vector<std::vector<int>>& puzzle)
+std::vector<std::tuple<int,int>> PuzzleSolver::CandidateReduction(std::vector<std::vector<int>>& puzzle)
 {
     // Data structure for keeping track of assigned zero index
     std::vector<std::tuple<int,int>> zero_elems{};
-    // Check if any group has 8 elements and in case add them to a vector
+    // Check if any cell has 8 elements in stats for rwo, col and grp
     std::vector<int> indexes;
     for (int i{ 0 }; i < stats.grp_sums.size(); i++)
     {
-        if (stats.grp_sums[i] == 8) {
+        if (stats.grp_sums[i] == 8 && stats.col_sums[i] == 8 && stats.row_sums[i] == 8) {
             indexes.push_back(i);
         }
     }
@@ -175,7 +175,7 @@ std::vector<std::tuple<int,int>> PuzzleSolver::CompleteEigthElemGroups(std::vect
     return zero_elems;
 }
 
-void PuzzleSolver::RevertEightElemGroupAssign(std::vector<std::vector<int>>& puzzle,
+void PuzzleSolver::RevertCandidateReduction(std::vector<std::vector<int>>& puzzle,
 const std::vector<std::tuple<int,int>>& indexes)
 {
     for(int i{0}; i<indexes.size(); i++)
@@ -298,9 +298,9 @@ int PuzzleSolver::MRVSolver(std::vector<std::vector<int>>& puzzle)
         called_once = true;
     }
 
-    // Complete groups with 8 elements if present. Indexes needed if we need to
-    // backtrack and value...
-    //std::vector<std::tuple<int,int>> indexes = CompleteEigthElemGroups(puzzle);
+    // Heuristics - Candidate Reduction. Complete cells having only one value 
+    // left to set. Indexes needed if we need to backtrack.
+    std::vector<std::tuple<int,int>> indexes = CandidateReduction(puzzle);
 
     // Find the element with least possibilities
     if (kOK == GetElementMRV(puzzle, row, col))
@@ -342,7 +342,7 @@ int PuzzleSolver::MRVSolver(std::vector<std::vector<int>>& puzzle)
         // Puzzle could not be solved for any value= 1..9, need to backtrack.
 
         // Revert assigned 8-element group completions
-        //RevertEightElemGroupAssign(puzzle, indexes);
+        RevertCandidateReduction(puzzle, indexes);
 
         puzzle[row][col] = 0;
         return kNotOK;
