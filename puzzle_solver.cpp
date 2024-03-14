@@ -123,60 +123,7 @@ int PuzzleSolver::GetElementMRV(const std::vector<std::vector<int>>& puzzle,
     return status;
 }
 
-std::vector<std::tuple<int,int>> PuzzleSolver::CandidateReduction(std::vector<std::vector<int>>& puzzle)
-{
-    // Data structure for keeping track of assigned zero index
-    std::vector<std::tuple<int,int>> zero_elems{};
-    // Check if any cell has 8 elements in stats for rwo, col and grp
-    std::vector<int> indexes;
-    for (int i{ 0 }; i < stats.grp_sums.size(); i++)
-    {
-        if (stats.grp_sums[i] == 8 && stats.col_sums[i] == 8 && stats.row_sums[i] == 8) {
-            indexes.push_back(i);
-        }
-    }
-
-    // Get the start row, col from group
-    for (int i{ 0 }; i < indexes.size(); i++)
-    {
-        std::tuple<int,int> row_col = GetRowColFromGrp(indexes[i]);
-        
-        int row = std::get<0>(row_col);
-        int col = std::get<1>(row_col);
-
-        // Get the missing number (total grp sum = 45)
-        int nbr = 45 - (puzzle[row][col] + puzzle[row][col + 1] + puzzle[row][col + 2] +
-            puzzle[row + 1][col] + puzzle[row + 1][col + 1] + puzzle[row + 1][col + 2] +
-            puzzle[row + 2][col] + puzzle[row + 2][col + 1] + puzzle[row + 2][col + 2]);
-
-        // Get the row, col where nbr is zero
-        int row_{ 0 };
-        int col_{ 0 };
-        std::tuple<int,int> temp {0,0};
-        for (row_=row; row_ <= (row + 2); row_++)
-        {
-            for (col_=col; col_ <= (col + 2); col_++)
-            {
-                if (puzzle[row_][col_] == 0)
-                {
-                    puzzle[row_][col_] = nbr;
-
-                    // Update stats data structure
-                    AddToRowSum(row_, 1);
-                    AddToColSum(col_, 1);
-                    AddToGrpSum(row_, col_, 1);
-
-                    // Save row_ and col_ for later (if we need to revert)
-                    temp = {row_, col_};
-                    zero_elems.push_back(temp);
-                }
-            }
-        }
-    }
-    return zero_elems;
-}
-
-void PuzzleSolver::RevertCandidateReduction(std::vector<std::vector<int>>& puzzle,
+void PuzzleSolver::RevertSoleCandidate(std::vector<std::vector<int>>& puzzle,
 const std::vector<std::tuple<int,int>>& indexes)
 {
     for(int i{0}; i<indexes.size(); i++)
@@ -214,9 +161,9 @@ std::vector<std::tuple<int,int>> PuzzleSolver::AddSoleCandidate(std::vector<std:
 
                 // Go through grp for non-zero elements
                 existing_numbers = {};
-                for (int row_ {grp_row}; row_ <= (row + 2); row_++)
+                for (int row_ {grp_row}; row_ <= (grp_row + 2); row_++)
                 {
-                    for (int col_ {grp_col}; col_ <= (col + 2); col_++)
+                    for (int col_ {grp_col}; col_ <= (grp_col + 2); col_++)
                     {
                         // Book-keep non-zero elements
                         if(puzzle[row_][col_] != 0)
@@ -263,6 +210,7 @@ std::vector<std::tuple<int,int>> PuzzleSolver::AddSoleCandidate(std::vector<std:
                         if(existing_numbers[i]==existing_numbers[i-1])
                         {
                             is_unique = false;
+                            break;
                         }
                     }
                     // If all numbers are different we can add missing value
@@ -396,7 +344,7 @@ int PuzzleSolver::MRVSolver(std::vector<std::vector<int>>& puzzle)
 
     // Heuristics - Candidate Reduction. Complete cells having only one value 
     // left to set. Indexes needed if we need to backtrack.
-    std::vector<std::tuple<int,int>> indexes = CandidateReduction(puzzle);
+    //std::vector<std::tuple<int,int>> indexes = AddSoleCandidate(puzzle);
 
     // Find the element with least possibilities
     if (kOK == GetElementMRV(puzzle, row, col))
@@ -438,7 +386,7 @@ int PuzzleSolver::MRVSolver(std::vector<std::vector<int>>& puzzle)
         // Puzzle could not be solved for any value= 1..9, need to backtrack.
 
         // Revert assigned 8-element group completions
-        RevertCandidateReduction(puzzle, indexes);
+        //RevertSoleCandidate(puzzle, indexes);
 
         puzzle[row][col] = 0;
         return kNotOK;

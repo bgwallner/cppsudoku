@@ -60,11 +60,8 @@ class PuzzleSolver {
 	int GetElementMRV(const std::vector<std::vector<int>>& puzzle,
 		int& row, int& col);
 
-	// Complete the cells having only one element left to set
-	std::vector<std::tuple<int,int>> CandidateReduction(std::vector<std::vector<int>>& puzzle);
-
 	// Revert assigned from CompleteEigthElemGroups
-    void RevertCandidateReduction(std::vector<std::vector<int>>& puzzle,
+    void RevertSoleCandidate(std::vector<std::vector<int>>& puzzle,
 	const std::vector<std::tuple<int,int>>& indexes);
 
     // If a sole candidate is left in unit consisting of row, col and grp then
