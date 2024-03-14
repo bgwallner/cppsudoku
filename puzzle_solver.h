@@ -67,6 +67,10 @@ class PuzzleSolver {
     void RevertCandidateReduction(std::vector<std::vector<int>>& puzzle,
 	const std::vector<std::tuple<int,int>>& indexes);
 
+    // If a sole candidate is left in unit consisting of row, col and grp then
+	// add it
+	std::vector<std::tuple<int,int>> AddSoleCandidate(std::vector<std::vector<int>>& puzzle);
+
     // Create checker object (otherwise created
 	// recursively in DFS)
 	puzzle_checker::PuzzleChecker checker;
