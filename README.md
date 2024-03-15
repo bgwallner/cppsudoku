@@ -17,9 +17,10 @@ What can it do?
               5 we don't know if any value 6,7,8 or 9 would also generate a solution.
 
 3) One MRV Solver, a DFS solver always choosing the next zero element having the least number
-   of options. This will decrease branching which can be seen by using the 17 clue
-   input/gordonroyle.txt where Forward- and Backward solver requires more than ~25 million
-   recursions while MRV solver use ~150000 recursions, i.e. a ~100 time improvement.
+   of options including Heuristics to fill in cells having only one possible candidate. 
+   This will decrease branching which can be seen by using the 17 clue input/gordonroyle.txt 
+   where Forward- and Backward solver requires more than ~25 million recursions while MRV solver 
+   use ~800 recursions.
 
 4) A sudoku creator class where the number of clues are provided. It will randomly place random
    numbers 1..9 and and check constraint. If constraint is not met value will be wasted and we

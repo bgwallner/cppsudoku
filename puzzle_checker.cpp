@@ -70,9 +70,9 @@ int PuzzleChecker:: IsInGroupValid(const int value, const std::vector<std::vecto
     row_start = row - row % 3;
     col_start = col - col % 3;
 
-    for (int i = row_start; i < (row_start + 3); i++)
+    for (int i = row_start; i <= (row_start + 2); i++)
     {
-        for (int j = col_start; j < (col_start + 3); j++)
+        for (int j = col_start; j <= (col_start + 2); j++)
         {
             if (value == puzzle[i][j])
             {
@@ -82,5 +82,4 @@ int PuzzleChecker:: IsInGroupValid(const int value, const std::vector<std::vecto
     }
     return kOK;
 }
-
 } // namespace puzzle_checker

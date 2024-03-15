@@ -5,6 +5,7 @@
 #include <numeric>
 
 #include "constants.h"
+#include "file_io.h"
 
 namespace puzzle_solver
 {
@@ -24,6 +25,86 @@ std::tuple<int, int> GetRowColFromGrp(const int grp_nbr)
     int start_row = (grp_nbr / 3) * 3;
     int start_col = (grp_nbr % 3) * 3;
     return std::make_tuple(start_row, start_col);
+}
+
+// Return the value for row, col if there is only one that can be assigned
+int ReturnIfInUnitOnlyOneLeft(const std::vector<std::vector<int>>& puzzle,
+    const int row, const int col)
+{
+    std::vector<int> value_found{};
+
+    int row_start{ 0 }, col_start{ 0 };
+
+    row_start = row - row % 3;
+    col_start = col - col % 3;
+
+    // Add all elements in grp not being zero to value_found
+    for (int row_{ row_start }; row_ <= (row_start + 2); row_++)
+    {
+        for (int col_{ col_start }; col_ <= (col_start + 2); col_++)
+        {
+            if (puzzle[row_][col_] != 0)
+            {
+                value_found.push_back(puzzle[row_][col_]);
+            }
+        }
+    }
+
+    // Add values found in row
+    for (int row_{ 0 }; row_ < kDim; row_++)
+    {
+        // Row is running index, don't count values within grp
+        if (!(row_ >= row_start && row_ <= (row_start + 2)))
+        {
+            if (puzzle[row_][col] != 0)
+            {
+                value_found.push_back(puzzle[row_][col]);
+            }
+        }
+    }
+
+    // Add values found in col
+    for (int col_{ 0 }; col_ < kDim; col_++)
+    {
+        // Row is running index
+        if (!(col_ >= col_start && col_ <= (col_start + 2)))
+        {
+            if (puzzle[row][col_] != 0)
+            {
+                value_found.push_back(puzzle[row][col_]);
+            }
+        }
+    }
+
+    // If values found is less than 8 there can't be just one value left
+    std::vector<int> vals_histogram{ 0,0,0,0,0,0,0,0,0 };
+    int value = 0;
+    if (value_found.size() >= 8)
+    {
+        for (int i{ 0 }; i < value_found.size(); i++)
+        {
+            vals_histogram[value_found[i]-1]++;
+        }
+
+        // Check number of zero elements, if more than 3 we are fucked.
+        int counter{ 0 };
+        for (int i{ 0 }; i < vals_histogram.size(); i++)
+        {
+            if (vals_histogram[i] == 0)
+            {
+                counter++;
+            }
+        }
+
+        // Check if only one zero
+        if (counter == 1)
+        {
+            // Iterator to element
+            auto it = std::find(vals_histogram.begin(), vals_histogram.end(), 0);
+            value = static_cast<int>(std::distance(vals_histogram.begin(), it) + 1);
+        }
+    }
+    return value;
 }
 
 } // namespace
@@ -141,7 +222,6 @@ const std::vector<std::tuple<int,int>>& indexes)
 
 std::vector<std::tuple<int,int>> PuzzleSolver::AddSoleCandidate(std::vector<std::vector<int>>& puzzle)
 {
-    std::vector<int> existing_numbers {};
     std::vector<std::tuple<int,int>> sole_candidates {};
     for (int row{ 0 }; row < kDim; row++)
     {
@@ -149,85 +229,24 @@ std::vector<std::tuple<int,int>> PuzzleSolver::AddSoleCandidate(std::vector<std:
         {
             if (puzzle[row][col] == 0)
             {
-                // Now we need to see if there is a unique number {1,9} missing
+                // Check if there is only one being possible to assign
+                int value = ReturnIfInUnitOnlyOneLeft(puzzle, row, col);
 
-                // Get the grp number from row, col
-                int grp_nbr = GetGroupNbr(row, col);
-
-                // Now get start of row, col for the grp
-                std::tuple<int, int> row_col = GetRowColFromGrp(grp_nbr);
-                int grp_row = std::get<0>(row_col);
-                int grp_col = std::get<1>(row_col);
-
-                // Go through grp for non-zero elements
-                existing_numbers = {};
-                for (int row_ {grp_row}; row_ <= (grp_row + 2); row_++)
+                // Check if only one value was missing
+                if (value != 0)
                 {
-                    for (int col_ {grp_col}; col_ <= (grp_col + 2); col_++)
-                    {
-                        // Book-keep non-zero elements
-                        if(puzzle[row_][col_] != 0)
-                        {
-                            existing_numbers.push_back(puzzle[row_][col_]);
-                        }
-                    }
-                }
+                    //file_io::FileIO printer;
+                    //printer.PrintPuzzleToConsole(puzzle);
+                    // Assign value
+                    puzzle[row][col] = value;
+                    // Update stats
+                    AddToRowSum(row, 1);
+                    AddToColSum(col, 1);
+                    AddToGrpSum(row, col, 1);
 
-                // Go though col and check for non-zero elements
-                for (int row_ {0}; row_<kDim; row_++)
-                {
-                    if(puzzle[row_][col] != 0)
-                    {
-                        // Only accepts rows not within grp
-                        if(!(row_ >= grp_row && row_ <= (grp_row+2)))
-                        {
-                            existing_numbers.push_back(puzzle[row_][col]);
-                        }
-                    }
-                }
-
-                // Go though row and check for non-zero elements
-                for (int col_ {0}; col_<kDim; col_++)
-                {
-                    if(puzzle[row][col_] != 0)
-                    {
-                        // Only accepts cols not within grp
-                        if(!(col_ >= grp_col && col_ <= (grp_col+2)))
-                        {
-                            existing_numbers.push_back(puzzle[row][col_]);
-                        }
-                    }
-                }
-
-                // Check that a unique number is missing.
-                if(existing_numbers.size() == 8)
-                {
-                    // Check if all 8 elements are different
-                    std::sort(existing_numbers.begin(), existing_numbers.end());
-                    bool is_unique{true};
-                    for(int i{1}; i<existing_numbers.size(); i++)
-                    {
-                        if(existing_numbers[i]==existing_numbers[i-1])
-                        {
-                            is_unique = false;
-                            break;
-                        }
-                    }
-                    // If all numbers are different we can add missing value
-                    if(is_unique)
-                    {
-                        // Missing number is 45 - sum(existing_numbers)
-                        puzzle[row][col] = 45-std::accumulate(existing_numbers.begin(), existing_numbers.end(), 0);
-
-                        // Update stats
-                        AddToRowSum(row, 1);
-                        AddToColSum(col, 1);
-                        AddToGrpSum(row, col, 1);
-
-                        // Save row, col if we need to revert
-                        std::tuple<int,int> temp {row,col};
-                        sole_candidates.push_back(temp);
-                    }
+                    // Save row, col if we need to revert
+                    std::tuple<int, int> temp{ row,col };
+                    sole_candidates.push_back(temp);
                 }
             }
         }
@@ -342,9 +361,10 @@ int PuzzleSolver::MRVSolver(std::vector<std::vector<int>>& puzzle)
         called_once = true;
     }
 
-    // Heuristics - Candidate Reduction. Complete cells having only one value 
-    // left to set. Indexes needed if we need to backtrack.
-    //std::vector<std::tuple<int,int>> indexes = AddSoleCandidate(puzzle);
+    // Heuristics - Human reasoning
+    
+    // 1) Sole Candidate: Complete cells having only one value possible to set.
+    std::vector<std::tuple<int,int>> indexes = AddSoleCandidate(puzzle);
 
     // Find the element with least possibilities
     if (kOK == GetElementMRV(puzzle, row, col))
@@ -386,7 +406,7 @@ int PuzzleSolver::MRVSolver(std::vector<std::vector<int>>& puzzle)
         // Puzzle could not be solved for any value= 1..9, need to backtrack.
 
         // Revert assigned 8-element group completions
-        //RevertSoleCandidate(puzzle, indexes);
+        RevertSoleCandidate(puzzle, indexes);
 
         puzzle[row][col] = 0;
         return kNotOK;
