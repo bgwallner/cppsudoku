@@ -83,10 +83,11 @@ int ReturnIfInUnitOnlyOneLeft(const std::vector<std::vector<int>>& puzzle,
     {
         for (int i{ 0 }; i < value_found.size(); i++)
         {
+            // Value to index mapping
             vals_histogram[value_found[i]-1]++;
         }
 
-        // Check number of zero elements, if more than 3 we are fucked.
+        // Check number of zero elements, if more than 1 we are f#cked.
         int counter{ 0 };
         for (int i{ 0 }; i < vals_histogram.size(); i++)
         {
