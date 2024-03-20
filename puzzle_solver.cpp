@@ -10,17 +10,17 @@
 namespace puzzle_solver
 {
 
-inline namespace
+namespace
 {
 
-int GetGroupNbr(const int row, const int col)
+inline int GetGroupNbr(const int row, const int col)
 {
     int grp_row = row / 3;
     int grp_col = col / 3;
     return grp_row * 3 + grp_col;
 }
 
-std::tuple<int, int> GetRowColFromGrp(const int grp_nbr)
+inline std::tuple<int, int> GetRowColFromGrp(const int grp_nbr)
 {
     int start_row = (grp_nbr / 3) * 3;
     int start_col = (grp_nbr % 3) * 3;
@@ -28,7 +28,7 @@ std::tuple<int, int> GetRowColFromGrp(const int grp_nbr)
 }
 
 // Return the value for row, col if there is only one that can be assigned
-int ReturnIfInUnitOnlyOneLeft(const std::vector<std::vector<int>>& puzzle,
+inline int ReturnIfInUnitOnlyOneLeft(const std::vector<std::vector<int>>& puzzle,
     const int row, const int col)
 {
     std::vector<int> value_found{};
@@ -362,16 +362,92 @@ int PuzzleSolver::MRVSolver(std::vector<std::vector<int>>& puzzle)
         called_once = true;
     }
 
-    // Heuristics - Human reasoning
+    // Some heuristics
     
-    // 1) Sole Candidate: Complete cells having only one value possible to set.
+    // Sole Candidate: Complete cells having only one value possible to set.
     std::vector<std::tuple<int,int>> indexes = AddSoleCandidate(puzzle);
 
-    // Find the element with least possibilities
+    // Minimum Reamining Values: Find the element with least number of 
+    // possible candidates
     if (kOK == GetElementMRV(puzzle, row, col))
     {
         // Test all values from 1->kMaxVal
         for (int value{ 1 }; value <= kMaxVal; value++)
+        {
+            // Check if uiValue is valid for (row, col)
+            if ((kOK == checker.IsInColValid(value, puzzle, row, col)) &&
+                (kOK == checker.IsInRowValid(value, puzzle, row, col)) &&
+                (kOK == checker.IsInGroupValid(value, puzzle, row, col)))
+            {
+                // Assign possible candidate for recursion N. */
+                puzzle[row][col] = value;
+
+                // Add value to row_sum, col_sum and grp_sum.
+                AddToRowSum(row, 1);
+                AddToColSum(col, 1);
+                AddToGrpSum(row, col, 1);
+
+                // Try to solve for recursion N+1 with the 'new' puzzle
+                if (kOK == MRVSolver(puzzle))
+                {
+                    // Puzzle solved (will generate an avalange of kOK).
+                    // We will not end up here until it has been detected
+                    // that no zero-elements can be found.
+                    return kOK;
+                }
+                else
+                {
+                    // Remove value from row_sum, col_sum and grp_sum.
+                    AddToRowSum(row, -1);
+                    AddToColSum(col, -1);
+                    AddToGrpSum(row, col, -1);
+                }
+            }
+        }
+
+        // Puzzle could not be solved for any value= 1..9, need to backtrack.
+
+        // Revert assigned 8-element group completions
+        RevertSoleCandidate(puzzle, indexes);
+
+        puzzle[row][col] = 0;
+        return kNotOK;
+    }
+    else
+    {
+        // No zeros found, all cells have a value and we are done.
+        // This is the first E_OK status which will fulfill
+        // if (kOK == MRVSolver(puzzle))
+        return kOK;
+    }
+}
+
+int PuzzleSolver::MRVSolverBW(std::vector<std::vector<int>>& puzzle)
+{
+    int row{ 0 }, col{ 0 };
+
+    // Increase counter for every recursion
+    recursion_counter++;
+
+    // Initialize stats data structure first call
+    static bool called_once{ false };
+    if (!called_once)
+    {
+        InitializeStats(puzzle);
+        called_once = true;
+    }
+
+    // Some heuristics, 
+
+    // Sole Candidate: Complete cells having only one value possible to set.
+    std::vector<std::tuple<int, int>> indexes = AddSoleCandidate(puzzle);
+
+    // Minimum Reamining Values: Find the element with least number of 
+    // possible candidates
+    if (kOK == GetElementMRV(puzzle, row, col))
+    {
+        // Test all values from 1->kMaxVal
+        for (int value{ kMaxVal }; value >= 1; value--)
         {
             // Check if uiValue is valid for (row, col)
             if ((kOK == checker.IsInColValid(value, puzzle, row, col)) &&

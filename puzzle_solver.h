@@ -85,6 +85,9 @@ public:
 	// Solve puzzle using Minimum Remaining Value strategy
 	int MRVSolver(std::vector<std::vector<int>>& puzzle);
 
+	// Solve puzzle using Minimum Remaining Value strategy (backward)
+	int MRVSolverBW(std::vector<std::vector<int>>& puzzle);
+
 	// Get number of recursions needed for solver
 	long GetNumberOfRecursions(void) { return recursion_counter; }
 

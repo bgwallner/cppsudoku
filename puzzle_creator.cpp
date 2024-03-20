@@ -44,13 +44,13 @@ int PuzzleCreator::RunPuzzleCreator(void)
         CreateRandomCandidate(checker);
 
         // Invoke solver
-        if (kOK == solver.ForwardSolver(solution))
+        if (kOK == solver.MRVSolver(solution))
         {
             // Only use counter from forward solving
             nbr_of_recursions = solver.GetNumberOfRecursions();
 
             // Solve backwards to check uniqueness
-            solver.BackwardSolver(solution_bw);
+            solver.MRVSolverBW(solution_bw);
             if (solution == solution_bw)
             {
                 // A unique Sudoku was found
